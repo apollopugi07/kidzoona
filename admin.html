@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kidzoona Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E7D32;
+            --secondary-color: #4CAF50;
+            --accent-color: #81C784;
+            --bg-color: #F5F7FA;
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --completed-color: #607D8B;
+            --shadow-sm: 0 2px 5px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Fredoka One', cursive;
+            margin: 0;
+        }
+
+        button {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 50px 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            border-top: 6px solid var(--primary-color);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .login-container h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-login:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dashboard {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .top-nav {
+            background: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-refresh {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-refresh:hover {
+            background: var(--primary-color);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .section-header {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge-count {
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-family: 'Quicksand';
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        thead {
+            background: #f8f9fa;
+            color: #555;
+            border-bottom: 2px solid #eee;
+        }
+
+        th {
+            padding: 15px 24px;
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.1s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: #f9fbfd;
+        }
+
+        td {
+            padding: 18px 24px;
+            vertical-align: middle;
+            font-size: 0.95rem;
+            color: #444;
+        }
+
+        .guest-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #888;
+            font-weight: 700;
+            margin-right: 5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background-color: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .status-overtime {
+            background-color: #FFEBEE;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+            animation: pulse-red 2s infinite;
+        }
+
+        .status-completed {
+            background-color: #ECEFF1;
+            color: #455A64;
+            border: 1px solid #CFD8DC;
+        }
+
+        .btn-checkout {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 5px rgba(46, 125, 50, 0.2);
+        }
+
+        .btn-checkout:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background: white;
+            color: #999;
+            border: 1px solid #ddd;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .btn-delete:hover {
+            background: #FFEBEE;
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .ticket-number {
+            background: var(--bg-color);
+            color: var(--primary-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Fredoka One';
+            font-size: 1.1rem;
+        }
+
+        .ticket-completed {
+            background: #eee;
+            color: #777;
+        }
+
+        .timer-text {
+            font-weight: 700;
+            font-family: 'Fredoka One'; 
+            font-size: 1rem;
+        }
+
+        .history-section {
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        @media (max-width: 768px) {
+            .content-area { padding: 15px; }
+            th, td { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container" id="loginScreen">
+        <h1>ADMIN PORTAL</h1>
+        <div class="input-group">
+            <input type="password" id="adminPass" placeholder="Enter Security Key">
+        </div>
+        <button class="btn-login" onclick="login()">Access Dashboard</button>
+    </div>
+
+    <div class="dashboard" id="dashboardScreen">
+        <div class="top-nav">
+            <div class="brand-title">
+                <span>Kidzoona Monitor</span>
+            </div>
+            <button class="btn-refresh" onclick="fetchData()">
+                <span>Refresh Data</span> ⟳
+            </button>
+        </div>
+
+        <div class="content-area">
+            
+            <div>
+                <div class="section-header">
+                    <span> Active Sessions</span>
+                    <span id="activeCount" class="badge-count">0</span>
+                </div>
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Guest Information</th>
+                                    <th>Entry Time</th>
+                                    <th>Duration Status</th>
+                                    <th>Current State</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activeTableBody">
+                                <tr><td colspan="6" style="text-align:center; padding:30px; color:#999;">Loading active sessions...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="history-section">
+                <div class="section-header">
+                    <span> Completed Transactions</span>
+                    <span id="historyCount" class="badge-count" style="background:#78909C">0</span>
+                </div>
+                <div class="card">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Guest Information</th>
+                                    <th>Entry Time</th>
+                                    <th>Exit Time</th>
+                                    <th>Final Status</th>
+                                    <th style="text-align:right;">Admin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <tr><td colspan="6" style="text-align:center; padding:30px; color:#999;">No history found.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "/api/admin/registrations";
+        const CHECKOUT_URL = "/api/admin/registrations/checkout/"; 
+        const DELETE_URL = "/api/admin/registrations/";
+        
+        const OVERTIME_RATE = 50; 
+        const OVERTIME_BLOCK = 30; 
+
+        function login() {
+            const p = document.getElementById('adminPass').value;
+            if(p === "admin") { 
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboardScreen').style.display = 'flex';
+                fetchData();
+                setInterval(updateTimers, 1000); 
+            } else {
+                alert("Access Denied: Incorrect credentials.");
+            }
+        }
+
+        let allRegistrations = [];
+
+        async function fetchData() {
+            try {
+                const res = await fetch(API_URL);
+                allRegistrations = await res.json();
+                renderTables();
+            } catch (err) {
+                console.error(err);
+                alert("Connection Error: Unable to reach the server.");
+            }
+        }
+
+        function renderTables() {
+            const activeBody = document.getElementById('activeTableBody');
+            const historyBody = document.getElementById('historyTableBody');
+            
+            activeBody.innerHTML = '';
+            historyBody.innerHTML = '';
+
+            const activeRegs = allRegistrations.filter(r => r.status !== 'completed');
+            const historyRegs = allRegistrations.filter(r => r.status === 'completed');
+
+            document.getElementById('activeCount').innerText = activeRegs.length;
+            document.getElementById('historyCount').innerText = historyRegs.length;
+
+            if (activeRegs.length === 0) {
+                activeBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#888;">No active guests at the moment.</td></tr>';
+            } else {
+                activeRegs.forEach(reg => {
+                    activeBody.innerHTML += createActiveRow(reg);
+                });
+            }
+
+            if (historyRegs.length === 0) {
+                historyBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:#888;">No transaction history available.</td></tr>';
+            } else {
+                historyRegs.reverse().forEach(reg => {
+                    historyBody.innerHTML += createHistoryRow(reg);
+                });
+            }
+
+            updateTimers();
+        }
+
+        function createActiveRow(reg) {
+            let durationMinutes = 60; 
+            if (reg.playtimeRate == 300) durationMinutes = 120; 
+            if (reg.playtimeRate == 350) durationMinutes = 180; 
+
+            let childInfo = reg.children.map(c => `<div style="margin-bottom:2px;"><b>${c.name}</b> <span style="font-size:0.85em; color:#777;">(${c.age} yrs)</span></div>`).join('');
+            let guardianInfo = reg.guardians.map(g => `<div>${g.name} <span style="font-size:0.85em; color:#777;">${g.phone}</span></div>`).join('');
+
+            return `
+            <tr id="row-${reg._id}">
+                <td><span class="ticket-number">#${reg.ticketNumber || '00'}</span></td>
+                <td>
+                    <div class="guest-info">
+                        <div style="margin-bottom:8px;">
+                            <span class="label">Kids</span>
+                            ${childInfo}
+                        </div>
+                        <div>
+                            <span class="label">Guardian</span>
+                            ${guardianInfo}
+                        </div>
+                    </div>
+                </td>
+                <td style="font-weight:600;">${new Date(reg.registrationDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+                
+                <td class="timer-cell timer-text" 
+                    data-start="${reg.registrationDate}" 
+                    data-duration="${durationMinutes}">
+                    Calculating...
+                </td>
+
+                <td class="status-cell">
+                    <span class="status-badge status-active">Active</span>
+                </td>
+
+                <td style="text-align:right;">
+                    <button class="btn-checkout" onclick="checkoutRecord('${reg._id}')">✓ Check Out</button>
+                </td>
+            </tr>`;
+        }
+
+        function createHistoryRow(reg) {
+            let childInfo = reg.children.map(c => `${c.name}`).join(', ');
+            let checkoutTime = reg.checkoutDate ? new Date(reg.checkoutDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'N/A';
+
+            return `
+            <tr>
+                <td><span class="ticket-number ticket-completed">#${reg.ticketNumber || '00'}</span></td>
+                <td>
+                    <div class="guest-info">
+                        <div style="font-weight:bold; color:#555;">${childInfo}</div>
+                        <div style="font-size:0.85rem; color:#888;">${reg.guardians[0]?.name || 'Guardian'}</div>
+                    </div>
+                </td>
+                <td style="color:#777;">${new Date(reg.registrationDate).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+                <td style="color:#2E7D32; font-weight:600;">${checkoutTime}</td>
+                <td>
+                    <span class="status-badge status-completed">Completed</span>
+                </td>
+                <td style="text-align:right;">
+                    <button class="btn-delete" onclick="deleteRecord('${reg._id}')">🗑 Delete</button>
+                </td>
+            </tr>`;
+        }
+
+        function updateTimers() {
+            const now = new Date();
+            
+            document.querySelectorAll('.timer-cell').forEach(cell => {
+                const startTime = new Date(cell.dataset.start);
+                const durationMins = parseInt(cell.dataset.duration);
+                const endTime = new Date(startTime.getTime() + durationMins * 60000);
+                
+                const diff = endTime - now;
+                const row = cell.parentElement;
+                const statusCell = row.querySelector('.status-cell');
+
+                if (diff > 0) {
+                    const mins = Math.floor(diff / 60000);
+                    const secs = Math.floor((diff % 60000) / 1000);
+                    cell.innerText = `${mins}m ${secs}s`;
+                    cell.style.color = "var(--primary-color)";
+                    statusCell.innerHTML = `<span class="status-badge status-active">In Play</span>`;
+                } else {
+                    const overMs = Math.abs(diff);
+                    const overMins = Math.floor(overMs / 60000);
+                    const overSecs = Math.floor((overMs % 60000) / 1000);
+                    
+                    cell.innerText = `+ ${overMins}m ${overSecs}s`;
+                    cell.style.color = "var(--danger-color)";
+
+                    const blocks = Math.floor(overMins / OVERTIME_BLOCK) + 1;
+                    const extraFee = blocks * OVERTIME_RATE;
+
+                    statusCell.innerHTML = `
+                        <div style="display:flex; flex-direction:column; gap:5px;">
+                            <span class="status-badge status-overtime">Overtime</span>
+                            <div style="font-size:0.8rem; color:var(--danger-color); font-weight:bold;">
+                                Fee: ₱${extraFee}
+                            </div>
+                        </div>`;
+                }
+            });
+        }
+
+        async function checkoutRecord(id) {
+            if(confirm("Confirm checkout? This will move the guest to Completed Transactions.")) {
+                try {
+                    const res = await fetch(CHECKOUT_URL + id, { method: 'PUT' });
+                    
+                    if(res.ok) {
+                        fetchData();
+                    } else {
+
+                        alert("Please ensure your backend supports the checkout status update endpoint.");
+                    }
+                } catch (e) {
+                    alert("System Error: Could not update record.");
+                }
+            }
+        }
+
+        async function deleteRecord(id) {
+            if(confirm("Permanently delete this history record?")) {
+                try {
+                    await fetch(DELETE_URL + id, { method: 'DELETE' });
+                    fetchData(); 
+                } catch (e) {
+                    alert("System Error: Could not delete record.");
+                }
+            }
+        }
+    </script>
+</body>
+</html>
